@@ -1,4 +1,5 @@
-import { crypto } from "@std/crypto";
+import { ulid } from "jsr:@std/ulid";
+
 import { ITodo } from "./types.ts";
 
 const kv = await Deno.openKv();
@@ -22,7 +23,7 @@ export async function getTodo(id: string): Promise<ITodo | null> {
 
 export async function setTodo(
   name: string,
-  id = crypto.randomUUID()
+  id = ulid()
 ): Promise<ITodo | null> {
   const result = await kv.set(["todos", id], { id, name });
   if (!result.ok) {
