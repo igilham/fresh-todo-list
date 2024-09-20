@@ -1,40 +1,54 @@
-import { useRef, useState } from "preact/hooks";
-import { Tasks } from "../components/Tasks.tsx";
-
-export interface ITask {
-  uuid: string;
-  desc: string;
-}
+import { useEffect, useRef, useState } from "preact/hooks";
+import { Todos } from "../components/Todos.tsx";
+import { ITodo } from "../store/types.ts";
 
 export default function Todo() {
-  const [tasks, setTasks] = useState<ITask[]>([]);
-  const taskRef = useRef<HTMLInputElement | null>(null);
+  const [todos, setTodos] = useState<ITodo[]>([]);
+  const todoRef = useRef<HTMLInputElement | null>(null);
 
-  function removeTask(uuid: string) {
-    setTasks((tasks) => tasks.filter((task) => task.uuid != uuid));
+  async function getTodos() {
+    return (await fetch("/api/todos")).json();
   }
+
+  async function removeTodo(id: string) {
+    await fetch(`/api/todos/${id}`, { method: "DELETE" });
+    setTodos((todos) => todos.filter((todo) => todo.id !== id));
+  }
+
+  // TODO: make server action
+  async function createTodo(e: Event) {
+    e.preventDefault();
+
+    // basic validation
+    if (!todoRef?.current?.value) {
+      return;
+    }
+
+    const data = await fetch("/api/todos", {
+      method: "POST",
+      body: JSON.stringify({ name: todoRef.current.value }),
+    });
+    todoRef.current.value = "";
+    const json = await data.json();
+    console.log(json);
+    setTodos((todos) => [...todos, json]);
+  }
+
+  useEffect(() => {
+    getTodos().then(setTodos);
+  }, []);
 
   return (
     <div class="flex flex-col w-full pt-5">
       <form
         class="flex gap-2 w-full"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!taskRef?.current?.value) return;
-          setTasks((
-            p,
-          ) => [...p, {
-            desc: taskRef?.current?.value ?? "",
-            uuid: crypto.randomUUID(),
-          }]);
-          taskRef.current.value = "";
-        }}
+        onSubmit={createTodo}
       >
         <input
           class="w-5/6 border-1 border-gray-500 h-10 rounded p-2"
-          placeholder="Write your task here..."
+          placeholder="Write your todo here..."
           type="text"
-          ref={taskRef}
+          ref={todoRef}
         />
         <button
           type="submit"
@@ -50,7 +64,7 @@ export default function Todo() {
           </svg>
         </button>
       </form>
-      <Tasks tasks={tasks} removeTask={removeTask} />
+      <Todos todos={todos} removeTodo={removeTodo} />
     </div>
   );
 }

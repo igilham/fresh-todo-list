@@ -1,18 +1,18 @@
-import { ITask } from "../islands/Todo.tsx";
+import { ITodo } from "../store/types.ts";
 
-interface TaskProps {
-  task: ITask;
-  removeTask: (s: string) => void;
+interface TodoProps {
+  todo: ITodo;
+  removeTodo: (s: string) => void;
 }
 
-export function Task({ task, removeTask }: TaskProps) {
+export function Todo({ todo, removeTodo }: TodoProps) {
   return (
     <div class="w-full bg-gray-50 h-12 text-black rounded shadow flex justify-between items-center content-between">
       <p class="p-2 w-5/6">
-        {task.desc}
+        {todo.name}
       </p>
       <button
-        onClick={() => removeTask(task.uuid)}
+        onClick={() => removeTodo(todo.id)}
         class="w-1/6 bg-gray-100 hover:bg-gray-200 h-full flex justify-center items-center"
       >
         <svg
