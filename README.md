@@ -2,6 +2,9 @@
 
 [![Made with Fresh](https://fresh.deno.dev/fresh-badge.svg)](https://fresh.deno.dev)
 
+This is a very simple todo list app built with Fresh. Originally, all data was
+stored in memory. This form uses Deno KV for persistence.
+
 ### Usage
 
 Start the project:
