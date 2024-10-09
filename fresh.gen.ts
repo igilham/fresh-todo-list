@@ -7,7 +7,7 @@ import * as $api_todos_id_ from "./routes/api/todos/[id].ts";
 import * as $api_todos_index from "./routes/api/todos/index.ts";
 import * as $index from "./routes/index.tsx";
 import * as $Todo from "./islands/Todo.tsx";
-import { type Manifest } from "$fresh/server.ts";
+import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
   routes: {
